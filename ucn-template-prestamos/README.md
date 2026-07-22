@@ -27,9 +27,9 @@ La carpeta puede usarse como repositorio independiente, con su propio Supabase, 
 ## Arranque local
 
 ```powershell
-npm.cmd install
-Copy-Item .env.example .env.local
-npm.cmd run dev
+npm install
+cp .env.example .env.local
+npm run dev
 ```
 
 Completa `.env.local`:
@@ -46,9 +46,10 @@ La URL de Supabase debe ser la URL base del proyecto.
 ## Configurar Supabase
 
 ```powershell
-npm.cmd run supabase:link
-npm.cmd run supabase:push
-npm.cmd run supabase:types
+npx supabase login
+npm run supabase:link
+npm run supabase:push
+npm run supabase:types
 ```
 
 Configura Auth:
@@ -82,13 +83,17 @@ Si falla Auth, revisa `docs/ERRORES_REGISTRO.md`.
 
 Builder edita textos, secciones publicas, landing y componentes visuales. Las acciones administrativas siguen protegidas por RLS y funciones PostgreSQL.
 
+1. Sube la carpeta a un repositorio privado de Git.
+2. Importa el repositorio en Builder.io.
+3. Agrega variables de entorno.
+
 ## Validacion
 
 ```powershell
-npm.cmd run lint
-npm.cmd run typecheck
-npm.cmd test
-npm.cmd run build
+npm run lint
+npm run typecheck
+npm test
+npm run build
 ```
 
 ## Despliegue

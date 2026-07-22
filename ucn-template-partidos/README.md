@@ -66,19 +66,23 @@ Si Builder.io aun no esta configurado, la app mostrara una pagina local de respa
 3. Vincula el proyecto.
 
 ```powershell
-npm.cmd run supabase:link
+npx supabase login
+```
+
+```powershell
+npm run supabase:link
 ```
 
 4. Ejecuta las migraciones.
 
 ```powershell
-npm.cmd run supabase:push
+npm run supabase:push
 ```
 
 5. Genera tipos.
 
 ```powershell
-npm.cmd run supabase:types
+npm run supabase:types
 ```
 
 6. En Supabase Auth configura:
