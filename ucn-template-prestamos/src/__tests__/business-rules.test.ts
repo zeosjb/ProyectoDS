@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canApproveLoan, nextLoanStatus } from "@/lib/domain/rules";
+import { canApproveLoan, canRequestLoan, nextLoanStatus } from "@/lib/domain/rules";
 
 describe("reglas de prestamos", () => {
   it("no aprueba mas unidades que las disponibles", () => {
@@ -10,5 +10,10 @@ describe("reglas de prestamos", () => {
   it("valida transiciones", () => {
     expect(nextLoanStatus("pending", "approve")).toBe(true);
     expect(nextLoanStatus("returned", "deliver")).toBe(false);
+  });
+
+  it("impide solicitar equipos propios", () => {
+    expect(canRequestLoan("user-1", "user-1")).toBe(false);
+    expect(canRequestLoan("user-1", "user-2")).toBe(true);
   });
 });
