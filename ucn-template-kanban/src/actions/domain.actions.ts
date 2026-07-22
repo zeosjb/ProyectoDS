@@ -5,13 +5,23 @@ import { createClient } from "@/lib/supabase/server";
 import { getEnvStatus } from "@/lib/env";
 import { boardSchema, taskQuickUpdateSchema, taskSchema, taskUpdateSchema } from "@/lib/validations/domain";
 
-export type ActionResult = { ok: boolean; message: string };
+export type ActionResult = { ok: boolean; message: string; id?: string };
+
+function formDataObject(formData: FormData) {
+  const values: Record<string, FormDataEntryValue> = {};
+
+  for (const [key, value] of formData.entries()) {
+    values[key.replace(/^_\d+_/, "")] = value;
+  }
+
+  return values;
+}
 
 export async function createDomainItemAction(_previous: ActionResult, formData: FormData): Promise<ActionResult> {
   const env = getEnvStatus();
   if (!env.supabaseReady) return { ok: false, message: "Configura Supabase antes de guardar datos." };
 
-  const parsed = taskSchema.safeParse(Object.fromEntries(formData));
+  const parsed = taskSchema.safeParse(formDataObject(formData));
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Revisa los datos del formulario." };
 
   const supabase = await createClient();
@@ -37,7 +47,7 @@ export async function createBoardAction(_previous: ActionResult, formData: FormD
   const env = getEnvStatus();
   if (!env.supabaseReady) return { ok: false, message: "Configura Supabase antes de crear tableros." };
 
-  const parsed = boardSchema.safeParse(Object.fromEntries(formData));
+  const parsed = boardSchema.safeParse(formDataObject(formData));
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Revisa el nombre del tablero." };
 
   const supabase = await createClient();
@@ -45,21 +55,27 @@ export async function createBoardAction(_previous: ActionResult, formData: FormD
   const userId = claimsData?.claims?.sub;
   if (!userId) return { ok: false, message: "Debes iniciar sesion." };
 
-  const { data, error } = await supabase.from("boards").insert({ owner_id: userId, name: parsed.data.name }).select("id").single();
-  if (error || !data?.id) return { ok: false, message: "No pudimos crear el tablero." };
+  const { data, error } = await supabase.rpc("create_board_with_owner", {
+    board_name: parsed.data.name,
+    board_description: parsed.data.description ?? ""
+  });
 
-  const { error: memberError } = await supabase.from("board_members").insert({ board_id: String(data.id), user_id: userId });
-  if (memberError) return { ok: false, message: "El tablero se creo, pero no pudimos agregarte como integrante." };
+  if (error || !data) {
+    return {
+      ok: false,
+      message: "No pudimos crear el tablero. Revisa las politicas RLS y que las migraciones esten aplicadas."
+    };
+  }
 
   revalidatePath("/dashboard");
-  return { ok: true, message: "Tablero creado." };
+  return { ok: true, message: "Tablero creado.", id: String(data) };
 }
 
 export async function updateTaskAction(_previous: ActionResult, formData: FormData): Promise<ActionResult> {
   const env = getEnvStatus();
   if (!env.supabaseReady) return { ok: false, message: "Configura Supabase antes de editar tareas." };
 
-  const parsed = taskUpdateSchema.safeParse(Object.fromEntries(formData));
+  const parsed = taskUpdateSchema.safeParse(formDataObject(formData));
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Revisa los datos de la tarea." };
 
   const supabase = await createClient();

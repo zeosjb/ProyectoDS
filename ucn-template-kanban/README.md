@@ -19,7 +19,7 @@ Cada copia de esta carpeta funciona como repositorio independiente. No usa paque
 
 ## Requisitos
 
-- Node.js 20 o superior.
+- Node.js 20.x. No uses Node 22, 24 o superior para instalar este template; el SDK de Builder.io usa una dependencia nativa que debe resolverse con Node 20.
 - npm.
 - Proyecto Supabase independiente.
 - Espacio Builder.io independiente.
@@ -27,9 +27,9 @@ Cada copia de esta carpeta funciona como repositorio independiente. No usa paque
 ## Arranque rapido
 
 ```powershell
-npm.cmd install
-Copy-Item .env.example .env.local
-npm.cmd run dev
+npm install
+cp .env.example .env.local
+npm run dev
 ```
 
 Completa `.env.local`:
@@ -46,9 +46,10 @@ No uses una URL de Supabase con `/rest/v1/`; debe ser solo la URL base.
 ## Configurar Supabase
 
 ```powershell
-npm.cmd run supabase:link
-npm.cmd run supabase:push
-npm.cmd run supabase:types
+npx supabase login
+npm run supabase:link
+npm run supabase:push
+npm run supabase:types
 ```
 
 Luego configura en Authentication:
@@ -72,21 +73,26 @@ Si el registro falla, el formulario muestra en desarrollo `status`, `code` y `me
 
 Builder puede editar landing, secciones publicas y componentes visuales del tablero. La seguridad no depende de ocultar botones: las consultas y mutaciones siguen protegidas por RLS.
 
+1. Sube la carpeta a un repositorio privado de Git.
+2. Importa el repositorio en Builder.io.
+3. Agrega variables de entorno.
+
 ## Validacion
 
 ```powershell
-npm.cmd run lint
-npm.cmd run typecheck
-npm.cmd test
-npm.cmd run build
+npm run lint
+npm run typecheck
+npm test
+npm run build
 ```
 
 ## Despliegue en Vercel
 
 1. Sube la carpeta a un repositorio Git.
 2. Importa el repositorio en Vercel.
-3. Agrega variables de entorno.
-4. Agrega el dominio final como Redirect URL en Supabase.
+3. Confirma que Vercel use Node.js 20.x. El proyecto incluye `engines`, `.nvmrc` y `.node-version` para guiar esto.
+4. Agrega variables de entorno.
+5. Agrega el dominio final como Redirect URL en Supabase.
 
 ## Archivos importantes
 

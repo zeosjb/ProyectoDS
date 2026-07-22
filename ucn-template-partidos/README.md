@@ -18,7 +18,7 @@ Esta carpeta es un proyecto independiente. Puedes copiarla fuera de la carpeta p
 
 ## Requisitos
 
-- Node.js 20 o superior.
+- Node.js 20.x. No uses Node 22, 24 o superior para instalar este template; el SDK de Builder.io usa una dependencia nativa que debe resolverse con Node 20.
 - npm.
 - Una cuenta de Supabase.
 - Un espacio de Builder.io.
@@ -121,9 +121,10 @@ npm.cmd run build
 
 1. Sube este proyecto a un repositorio Git.
 2. Importalo en Vercel.
-3. Configura las mismas variables de `.env.local` en Vercel.
-4. Agrega la URL final de Vercel en Supabase Auth Redirect URLs.
-5. Despliega.
+3. Confirma que Vercel use Node.js 20.x. El proyecto incluye `engines`, `.nvmrc` y `.node-version` para guiar esto.
+4. Configura las mismas variables de `.env.local` en Vercel.
+5. Agrega la URL final de Vercel en Supabase Auth Redirect URLs.
+6. Despliega.
 
 ## Archivos importantes
 

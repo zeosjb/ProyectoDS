@@ -12,8 +12,11 @@ create table if not exists public.boards (
   id uuid primary key default gen_random_uuid(),
   owner_id uuid not null references public.profiles(id) on delete cascade,
   name text not null,
+  description text not null default '',
   created_at timestamptz not null default now()
 );
+
+alter table public.boards add column if not exists description text not null default '';
 
 create table if not exists public.board_members (
   board_id uuid not null references public.boards(id) on delete cascade,
