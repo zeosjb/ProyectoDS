@@ -3,6 +3,7 @@ import { getBuilderApiKey, getEnvStatus, appMeta } from "@/lib/env";
 import { customComponents } from "@/components/builder/registry";
 import { DomainLanding } from "@/components/domain";
 import { ConfigMissing } from "@/components/ui";
+import { getIsAuthenticated } from "@/lib/auth/session";
 
 type BuilderPageProps = {
   urlPath: string;
@@ -17,8 +18,14 @@ export async function BuilderPage({ urlPath, searchParams = {} }: BuilderPagePro
     return <ConfigMissing missing={env.missing.filter((key) => key !== "NEXT_PUBLIC_BUILDER_API_KEY")} />;
   }
 
+  const isAuthenticated = await getIsAuthenticated();
+
+  if (!isAuthenticated && urlPath === "/") {
+    return <DomainLanding title={appMeta.name} description={appMeta.description} isAuthenticated={false} />;
+  }
+
   if (!apiKey) {
-    return <DomainLanding title={appMeta.name} description={appMeta.description} />;
+    return <DomainLanding title={appMeta.name} description={appMeta.description} isAuthenticated={isAuthenticated} />;
   }
 
   const content = await fetchOneEntry({
@@ -33,7 +40,7 @@ export async function BuilderPage({ urlPath, searchParams = {} }: BuilderPagePro
   });
 
   if (!content && !isPreviewing(previewParams)) {
-    return <DomainLanding title={appMeta.name} description={appMeta.description} />;
+    return <DomainLanding title={appMeta.name} description={appMeta.description} isAuthenticated={isAuthenticated} />;
   }
 
   return <Content content={content} apiKey={apiKey} model="page" customComponents={customComponents} />;

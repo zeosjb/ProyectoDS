@@ -29,13 +29,13 @@ Esta carpeta es un proyecto independiente. Puedes copiarla fuera de la carpeta p
 1. Instala dependencias.
 
 ```powershell
-npm.cmd install
+npm install
 ```
 
 2. Copia las variables de entorno.
 
 ```powershell
-Copy-Item .env.example .env.local
+cp .env.example .env.local
 ```
 
 3. Completa `.env.local`.
@@ -52,7 +52,7 @@ Importante: `NEXT_PUBLIC_SUPABASE_URL` debe ser solo la URL base. No pegues una 
 4. Ejecuta el servidor.
 
 ```powershell
-npm.cmd run dev
+npm run dev
 ```
 
 5. Abre `http://localhost:3000`.
@@ -108,13 +108,17 @@ Consulta `docs/ERRORES_REGISTRO.md` si aparece un error.
 
 Los componentes funcionales respetan RLS y no usan claves secretas.
 
+1. Sube la carpeta a un repositorio privado de Git.
+2. Importa el repositorio en Builder.io.
+3. Agrega variables de entorno.
+
 ## Comandos utiles
 
 ```powershell
-npm.cmd run lint
-npm.cmd run typecheck
-npm.cmd test
-npm.cmd run build
+npm run lint
+npm run typecheck
+npm test
+npm run build
 ```
 
 ## Despliegue en Vercel

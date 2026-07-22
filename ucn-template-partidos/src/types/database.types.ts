@@ -169,8 +169,44 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_match_with_venue: {
+        Args: {
+          p_capacity: number
+          p_sport: string
+          p_starts_at: string
+          p_title: string
+          p_venue_name: string
+        }
+        Returns: string
+      }
+      get_active_registration_counts: {
+        Args: never
+        Returns: {
+          match_id: string
+          registered: number
+        }[]
+      }
+      get_match_attendees: {
+        Args: { p_match_id: string }
+        Returns: {
+          email: string
+          full_name: string
+          user_id: string
+        }[]
+      }
       is_admin: { Args: never; Returns: boolean }
       join_match_safe: { Args: { p_match_id: string }; Returns: undefined }
+      update_match_with_venue: {
+        Args: {
+          p_capacity: number
+          p_match_id: string
+          p_sport: string
+          p_starts_at: string
+          p_title: string
+          p_venue_name: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "user" | "admin"

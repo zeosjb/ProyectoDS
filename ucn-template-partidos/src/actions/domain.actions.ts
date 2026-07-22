@@ -6,6 +6,34 @@ import { getEnvStatus } from "@/lib/env";
 import { matchSchema, matchUpdateSchema, venueSchema, venueUpdateSchema } from "@/lib/validations/domain";
 
 export type ActionResult = { ok: boolean; message: string };
+export type MatchAttendee = {
+  userId: string;
+  fullName: string;
+  email: string;
+};
+
+type DomainErrorLike = {
+  message?: string;
+  code?: string;
+};
+
+function domainErrorMessage(error: DomainErrorLike, fallback: string) {
+  const message = error.message?.toLowerCase() ?? "";
+
+  if (error.code === "PGRST202" || message.includes("could not find the function")) {
+    return "Falta aplicar las migraciones de Supabase para crear partidos con canchas nuevas.";
+  }
+
+  if (message.includes("fecha") || message.includes("hora")) {
+    return error.message ?? fallback;
+  }
+
+  if (message.includes("cupo")) {
+    return error.message ?? fallback;
+  }
+
+  return fallback;
+}
 
 export async function createDomainItemAction(_previous: ActionResult, formData: FormData): Promise<ActionResult> {
   const env = getEnvStatus();
@@ -18,16 +46,15 @@ export async function createDomainItemAction(_previous: ActionResult, formData: 
   const { data: claimsData } = await supabase.auth.getClaims();
   const userId = claimsData?.claims?.sub;
   if (!userId) return { ok: false, message: "Debes iniciar sesion." };
-  const { error } = await supabase.from("matches").insert({
-    creator_id: userId,
-    title: parsed.data.title,
-    sport: parsed.data.sport,
-    venue_id: parsed.data.venueId,
-    starts_at: parsed.data.startsAt,
-    capacity: parsed.data.capacity,
-    status: "scheduled"
+
+  const { error } = await supabase.rpc("create_match_with_venue", {
+    p_title: parsed.data.title,
+    p_sport: parsed.data.sport,
+    p_venue_name: parsed.data.venueName,
+    p_starts_at: parsed.data.startsAt,
+    p_capacity: parsed.data.capacity
   });
-  if (error) return { ok: false, message: "No pudimos crear el partido." };
+  if (error) return { ok: false, message: domainErrorMessage(error, "No pudimos crear el partido.") };
   revalidatePath("/dashboard");
   return { ok: true, message: "Partido creado correctamente." };
 }
@@ -61,16 +88,16 @@ export async function updateMatchAction(_previous: ActionResult, formData: FormD
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Revisa los datos del formulario." };
 
   const supabase = await createClient();
-  const { error } = await supabase.from("matches").update({
-    title: parsed.data.title,
-    sport: parsed.data.sport,
-    venue_id: parsed.data.venueId,
-    starts_at: parsed.data.startsAt,
-    capacity: parsed.data.capacity,
-    updated_at: new Date().toISOString()
-  }).eq("id", parsed.data.id);
+  const { error } = await supabase.rpc("update_match_with_venue", {
+    p_match_id: parsed.data.id,
+    p_title: parsed.data.title,
+    p_sport: parsed.data.sport,
+    p_venue_name: parsed.data.venueName,
+    p_starts_at: parsed.data.startsAt,
+    p_capacity: parsed.data.capacity
+  });
 
-  if (error) return { ok: false, message: "No pudimos actualizar el partido. Revisa permisos y cupos." };
+  if (error) return { ok: false, message: domainErrorMessage(error, "No pudimos actualizar el partido. Revisa permisos y cupos.") };
   revalidatePath("/dashboard");
   return { ok: true, message: "Partido actualizado." };
 }
@@ -89,6 +116,32 @@ export async function cancelRegistrationAction(matchId: string): Promise<ActionR
   if (error) return { ok: false, message: "No pudimos cancelar tu inscripcion." };
   revalidatePath("/dashboard");
   return { ok: true, message: "Inscripcion cancelada." };
+}
+
+export async function getMatchAttendeesAction(matchId: string): Promise<ActionResult & { attendees: MatchAttendee[] }> {
+  const env = getEnvStatus();
+  if (!env.supabaseReady) return { ok: false, message: "Configura Supabase antes de ver inscritos.", attendees: [] };
+  if (!matchId) return { ok: false, message: "No se recibio un partido valido.", attendees: [] };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_match_attendees", { p_match_id: matchId });
+  if (error) {
+    return {
+      ok: false,
+      message: domainErrorMessage(error, "No pudimos cargar los inscritos del partido."),
+      attendees: []
+    };
+  }
+
+  return {
+    ok: true,
+    message: "",
+    attendees: (data ?? []).map((attendee) => ({
+      userId: String(attendee.user_id),
+      fullName: String(attendee.full_name),
+      email: String(attendee.email)
+    }))
+  };
 }
 
 export async function createVenueAction(_previous: ActionResult, formData: FormData): Promise<ActionResult> {

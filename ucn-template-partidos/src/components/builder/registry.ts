@@ -1,5 +1,5 @@
 import type { RegisteredComponent } from "@builder.io/sdk-react-nextjs";
-import { MatchCard, MatchList, MatchDetail, MatchForm, SportFilter, VenueSelector, JoinMatchButton, AvailableSlots, MatchStatusBadge } from "@/components/domain";
+import { MatchCard, MatchList, MatchDetail, MatchForm, SportFilter, JoinMatchButton, AvailableSlots, MatchStatusBadge } from "@/components/domain";
 
 export const customComponents: RegisteredComponent[] = [
   {
@@ -43,15 +43,6 @@ export const customComponents: RegisteredComponent[] = [
     name: "SportFilter",
     inputs: [
       { name: "title", type: "string", defaultValue: "SportFilter" },
-      { name: "description", type: "longText", defaultValue: "Texto editable para estudiantes." },
-      { name: "variant", type: "string", enum: ["compact", "featured"], defaultValue: "compact" }
-    ]
-  },
-  {
-    component: VenueSelector,
-    name: "VenueSelector",
-    inputs: [
-      { name: "title", type: "string", defaultValue: "VenueSelector" },
       { name: "description", type: "longText", defaultValue: "Texto editable para estudiantes." },
       { name: "variant", type: "string", enum: ["compact", "featured"], defaultValue: "compact" }
     ]
