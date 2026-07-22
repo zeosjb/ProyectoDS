@@ -1,5 +1,6 @@
 import { Content, fetchOneEntry, isPreviewing } from "@builder.io/sdk-react-nextjs";
 import { getBuilderApiKey, getEnvStatus, appMeta } from "@/lib/env";
+import { createClient } from "@/lib/supabase/server";
 import { customComponents } from "@/components/builder/registry";
 import { DomainLanding } from "@/components/domain";
 import { ConfigMissing } from "@/components/ui";
@@ -12,13 +13,22 @@ type BuilderPageProps = {
 export async function BuilderPage({ urlPath, searchParams = {} }: BuilderPageProps) {
   const env = getEnvStatus();
   const apiKey = getBuilderApiKey();
+  let authenticated = false;
 
   if (!env.supabaseReady) {
     return <ConfigMissing missing={env.missing.filter((key) => key !== "NEXT_PUBLIC_BUILDER_API_KEY")} />;
   }
 
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  authenticated = Boolean(data?.claims);
+
+  if (!authenticated && urlPath === "/") {
+    return <DomainLanding title={appMeta.name} description={appMeta.description} requireLogin />;
+  }
+
   if (!apiKey) {
-    return <DomainLanding title={appMeta.name} description={appMeta.description} />;
+    return <DomainLanding title={appMeta.name} description={appMeta.description} requireLogin={!authenticated} />;
   }
 
   const content = await fetchOneEntry({
@@ -33,7 +43,7 @@ export async function BuilderPage({ urlPath, searchParams = {} }: BuilderPagePro
   });
 
   if (!content && !isPreviewing(previewParams)) {
-    return <DomainLanding title={appMeta.name} description={appMeta.description} />;
+    return <DomainLanding title={appMeta.name} description={appMeta.description} requireLogin={!authenticated} />;
   }
 
   return <Content content={content} apiKey={apiKey} model="page" customComponents={customComponents} />;

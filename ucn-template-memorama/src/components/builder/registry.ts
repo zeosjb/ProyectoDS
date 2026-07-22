@@ -1,5 +1,5 @@
 import type { RegisteredComponent } from "@builder.io/sdk-react-nextjs";
-import { MemoryGame, ThemeSelector, DifficultySelector, GameResult, PlayerHistory, RankingTable } from "@/components/domain";
+import { MemoryGame, DifficultySelector, GameResult, PlayerHistory, RankingTable } from "@/components/domain";
 
 export const customComponents: RegisteredComponent[] = [
   {
@@ -7,15 +7,6 @@ export const customComponents: RegisteredComponent[] = [
     name: "MemoryGame",
     inputs: [
       { name: "title", type: "string", defaultValue: "MemoryGame" },
-      { name: "description", type: "longText", defaultValue: "Texto editable para estudiantes." },
-      { name: "variant", type: "string", enum: ["compact", "featured"], defaultValue: "compact" }
-    ]
-  },
-  {
-    component: ThemeSelector,
-    name: "ThemeSelector",
-    inputs: [
-      { name: "title", type: "string", defaultValue: "ThemeSelector" },
       { name: "description", type: "longText", defaultValue: "Texto editable para estudiantes." },
       { name: "variant", type: "string", enum: ["compact", "featured"], defaultValue: "compact" }
     ]

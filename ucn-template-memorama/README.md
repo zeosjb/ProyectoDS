@@ -28,9 +28,9 @@ Esta carpeta es independiente y puede convertirse en un repositorio propio, con 
 ## Arranque local
 
 ```powershell
-npm.cmd install
-Copy-Item .env.example .env.local
-npm.cmd run dev
+npm install
+cp .env.example .env.local
+npm run dev
 ```
 
 Completa `.env.local`:
@@ -47,9 +47,11 @@ Si pegas por accidente una URL con `/rest/v1/`, el cliente intentara normalizarl
 ## Configurar Supabase
 
 ```powershell
-npm.cmd run supabase:link
-npm.cmd run supabase:push
-npm.cmd run supabase:types
+npx supabase login
+npm run supabase:link
+npm run supabase:push
+npx supabase db query --linked --file supabase/seed.sql
+npm run supabase:types
 ```
 
 Configura Auth:
@@ -57,6 +59,8 @@ Configura Auth:
 - Site URL: `http://localhost:3000`
 - Redirect URL local: `http://localhost:3000/auth/confirm`
 - Redirect URL Vercel: `https://tu-dominio.vercel.app/auth/confirm`
+
+Si el navegador muestra `PGRST205` con un mensaje como `Could not find the table public.game_themes`, el `.env.local` esta apuntando a un proyecto Supabase que no tiene aplicadas las migraciones de memorama. Usa un proyecto Supabase nuevo o vincula el correcto y ejecuta `npm run supabase:push`; luego carga los datos iniciales con `npx supabase db query --linked --file supabase/seed.sql`.
 
 ## Flujo de prueba
 
@@ -85,13 +89,17 @@ El componente `MemoryGame` permite editar:
 
 La edicion visual no reemplaza las validaciones de servidor.
 
+1. Sube la carpeta a un repositorio privado de Git.
+2. Importa el repositorio en Builder.io.
+3. Agrega variables de entorno.
+
 ## Validacion
 
 ```powershell
-npm.cmd run lint
-npm.cmd run typecheck
-npm.cmd test
-npm.cmd run build
+npm run lint
+npm run typecheck
+npm test
+npm run build
 ```
 
 ## Despliegue

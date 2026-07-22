@@ -179,7 +179,7 @@ export type Database = {
     }
     Functions: {
       create_board_with_owner: {
-        Args: { board_name: string; board_description?: string }
+        Args: { board_description?: string; board_name: string }
         Returns: string
       }
       is_admin: { Args: never; Returns: boolean }

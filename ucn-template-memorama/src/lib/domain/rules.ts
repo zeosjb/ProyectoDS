@@ -11,5 +11,5 @@ export function calculateScore(difficulty: Difficulty, moves: number, durationSe
 
 export function validateGameResult(difficulty: Difficulty, moves: number, durationSeconds: number, pairsFound: number) {
   const pairs = pairsForDifficulty(difficulty);
-  return pairsFound === pairs && moves >= pairs && durationSeconds >= pairs * 2;
+  return pairsFound === pairs && moves >= pairs && durationSeconds > 0;
 }

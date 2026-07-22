@@ -1,0 +1,4 @@
+-- Placeholder for projects that were previously linked to another template and
+-- already have migration version 0005 recorded in supabase_migrations.
+-- Memorama schema is applied through the regular 0001-0004 migrations on clean
+-- projects, or through supabase/manual_setup_memorama.sql on reused projects.

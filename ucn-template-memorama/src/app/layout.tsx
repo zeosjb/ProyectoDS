@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
-import { appMeta } from "@/lib/env";
+import { appMeta, getEnvStatus } from "@/lib/env";
+import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 
 export const metadata: Metadata = {
@@ -9,7 +10,18 @@ export const metadata: Metadata = {
   description: appMeta.description
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+async function isAuthenticated() {
+  const env = getEnvStatus();
+  if (!env.supabaseReady) return false;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.getClaims();
+  return !error && Boolean(data?.claims);
+}
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const authenticated = await isAuthenticated();
+
   return (
     <html lang="es">
       <body className="min-h-screen antialiased">
@@ -17,10 +29,25 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3" aria-label="Principal">
             <Link className="font-bold text-slate-950" href="/">Pares Didacticos</Link>
             <div className="flex items-center gap-3 text-sm">
-              <Link className="text-slate-700 hover:text-slate-950" href="/dashboard">Dashboard</Link>
-              <Link className="text-slate-700 hover:text-slate-950" href="/perfil">Perfil</Link>
-              <Link className="rounded-md border border-slate-300 px-3 py-2 text-slate-800" href="/login">Entrar</Link>
-              <SignOutButton />
+              {authenticated ? (
+                <>
+                  <Link className="text-slate-700 hover:text-slate-950" href="/dashboard">Memoramas</Link>
+                  <details className="relative">
+                    <summary className="cursor-pointer rounded-md border border-slate-300 px-3 py-2 text-slate-800 marker:content-[''] hover:bg-slate-50">
+                      Perfil
+                    </summary>
+                    <div className="absolute right-0 z-20 mt-2 grid min-w-40 gap-1 rounded-md border border-slate-200 bg-white p-2 shadow-lg">
+                      <Link className="rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100" href="/perfil">Ver perfil</Link>
+                      <SignOutButton />
+                    </div>
+                  </details>
+                </>
+              ) : (
+                <>
+                  <Link className="rounded-md border border-slate-300 px-3 py-2 text-slate-800 hover:bg-slate-50" href="/login">Entrar</Link>
+                  <Link className="rounded-md bg-emerald-700 px-3 py-2 font-semibold text-white hover:bg-emerald-800" href="/registro">Registrarme</Link>
+                </>
+              )}
             </div>
           </nav>
         </header>
