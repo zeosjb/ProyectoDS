@@ -92,6 +92,61 @@ export type Database = {
         }
         Relationships: []
       }
+      recipe_comments: {
+        Row: {
+          author_name: string
+          body: string
+          created_at: string
+          id: string
+          parent_comment_id: string | null
+          recipe_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          author_name?: string
+          body: string
+          created_at?: string
+          id?: string
+          parent_comment_id?: string | null
+          recipe_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          author_name?: string
+          body?: string
+          created_at?: string
+          id?: string
+          parent_comment_id?: string | null
+          recipe_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "recipe_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_comments_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recipe_ingredients: {
         Row: {
           ingredient_id: string
@@ -174,7 +229,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      comment_parent_matches_recipe: {
+        Args: { parent_id: string; target_recipe_id: string }
+        Returns: boolean
+      }
+      delete_recipe_comment_thread: {
+        Args: { target_comment_id: string }
+        Returns: number
+      }
       is_admin: { Args: never; Returns: boolean }
+      soft_delete_recipe_with_related_data: {
+        Args: { target_recipe_id: string }
+        Returns: number
+      }
     }
     Enums: {
       app_role: "user" | "admin"

@@ -27,9 +27,9 @@ Esta carpeta es un proyecto independiente. Puedes copiarla, subirla a un reposit
 ## Primer arranque local
 
 ```powershell
-npm.cmd install
-Copy-Item .env.example .env.local
-npm.cmd run dev
+npm install
+cp .env.example .env.local
+npm run dev
 ```
 
 Completa `.env.local` antes de probar autenticacion:
@@ -50,9 +50,10 @@ La URL de Supabase debe ser la base del proyecto, sin `/rest/v1/`.
 3. Vincula y sube migraciones.
 
 ```powershell
-npm.cmd run supabase:link
-npm.cmd run supabase:push
-npm.cmd run supabase:types
+npx supabase login
+npm run supabase:link
+npm run supabase:push
+npm run supabase:types
 ```
 
 4. En Auth configura:
@@ -83,13 +84,17 @@ Si falla el registro, el formulario muestra una linea tecnica segura en desarrol
 
 Los componentes muestran datos demo dentro del editor visual y mantienen la funcionalidad aunque cambies textos o estilos.
 
+1. Sube la carpeta a un repositorio privado de Git.
+2. Importa el repositorio en Builder.io.
+3. Agrega variables de entorno.
+
 ## Validacion
 
 ```powershell
-npm.cmd run lint
-npm.cmd run typecheck
-npm.cmd test
-npm.cmd run build
+npm run lint
+npm run typecheck
+npm test
+npm run build
 ```
 
 ## Despliegue
