@@ -1,0 +1,1 @@
+-- Datos de demostracion para tableros y tareas se crean desde la app porque requieren usuarios reales.
