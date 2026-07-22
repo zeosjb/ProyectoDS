@@ -19,8 +19,8 @@ Cada copia de esta carpeta funciona como repositorio independiente. No usa paque
 
 ## Requisitos
 
-- Node.js 20.x. No uses Node 22, 24 o superior para instalar este template; el SDK de Builder.io usa una dependencia nativa que debe resolverse con Node 20.
-- npm.
+- Node.js >=20.9.0. El template usa la version activa del usuario o del deployment mientras cumpla este minimo.
+- npm >=10.0.0.
 - Proyecto Supabase independiente.
 - Espacio Builder.io independiente.
 
@@ -90,7 +90,7 @@ npm run build
 
 1. Sube la carpeta a un repositorio Git.
 2. Importa el repositorio en Vercel.
-3. Confirma que Vercel use Node.js 20.x. El proyecto incluye `engines`, `.nvmrc` y `.node-version` para guiar esto.
+3. Usa la version de Node configurada en Vercel o en el deployment. El proyecto solo declara minimos en `engines`, asi que Node/npm mas nuevos son validos.
 4. Agrega variables de entorno.
 5. Agrega el dominio final como Redirect URL en Supabase.
 

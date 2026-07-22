@@ -20,8 +20,8 @@ Esta carpeta es independiente y puede convertirse en un repositorio propio, con 
 
 ## Requisitos
 
-- Node.js 20.x. No uses Node 22, 24 o superior para instalar este template; el SDK de Builder.io usa una dependencia nativa que debe resolverse con Node 20.
-- npm.
+- Node.js >=20.9.0. El template usa la version activa del usuario o del deployment mientras cumpla este minimo.
+- npm >=10.0.0.
 - Proyecto Supabase nuevo.
 - Espacio Builder.io nuevo.
 
@@ -104,7 +104,7 @@ npm run build
 
 ## Despliegue
 
-Sube el proyecto a GitHub, importalo en Vercel, confirma que use Node.js 20.x, configura variables de entorno y agrega el dominio final en Supabase Auth. El proyecto incluye `engines`, `.nvmrc` y `.node-version` para guiar la version de Node.
+Sube el proyecto a GitHub, importalo en Vercel, usa la version de Node configurada en el deployment, configura variables de entorno y agrega el dominio final en Supabase Auth. El proyecto solo declara minimos en `engines`, asi que Node/npm mas nuevos son validos.
 
 ## Archivos importantes
 
