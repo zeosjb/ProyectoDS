@@ -19,7 +19,7 @@ Cada copia de esta carpeta funciona como repositorio independiente. No usa paque
 
 ## Requisitos
 
-- Node.js >=20.9.0. El template usa la version activa del usuario o del deployment mientras cumpla este minimo.
+- Node.js >=22.0.0. El template usa la version activa del usuario o del deployment mientras cumpla este minimo.
 - npm >=10.0.0.
 - Proyecto Supabase independiente.
 - Espacio Builder.io independiente.

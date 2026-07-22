@@ -5,7 +5,7 @@ Plantilla colaborativa de preparaciones con ingredientes, favoritos e imagenes.
 ## Inicio rapido
 
 1. Crea un repositorio desde esta carpeta template.
-2. Usa Node.js 20.x y ejecuta `npm install`.
+2. Usa la version de Node.js disponible en tu equipo o deployment y ejecuta `npm install`.
 3. Crea un proyecto Supabase independiente.
 4. Copia `.env.example` como `.env.local`.
 5. Copia la URL y la Publishable Key de Supabase.

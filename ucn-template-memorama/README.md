@@ -20,7 +20,7 @@ Esta carpeta es independiente y puede convertirse en un repositorio propio, con 
 
 ## Requisitos
 
-- Node.js >=20.9.0. El template usa la version activa del usuario o del deployment mientras cumpla este minimo.
+- Node.js >=22.0.0. El template usa la version activa del usuario o del deployment mientras cumpla este minimo.
 - npm >=10.0.0.
 - Proyecto Supabase nuevo.
 - Espacio Builder.io nuevo.
